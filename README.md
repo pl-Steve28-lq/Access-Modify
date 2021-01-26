@@ -1,6 +1,9 @@
 # Access Modify
 Use private, protected class methods in Python!
 
+## Download
+`pip install access-modify`
+
 ## Example
 
 ```Python
