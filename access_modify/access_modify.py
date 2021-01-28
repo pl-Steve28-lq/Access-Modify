@@ -2,10 +2,19 @@ import inspect
 
 class AccessException(Exception): pass
 
+isFunc = lambda f: isinstance(f, type(lambda: 1))
+isClass = lambda c: hasattr(c, '__call__') and not isFunc(c)
+
 def privatefunc(cls, f):
   def _(*args, **kwargs):
     caller = inspect.stack()[1].function
-    if not hasattr(cls, caller):
+    if not (
+      hasattr(cls, caller) or
+      any(map(
+        lambda x: hasattr(x, caller),
+        list(filter(isClass, dict(cls.__dict__).values()))
+      ))
+    ):
       raise AccessException("Private function cannot be accessed.")
     return f(*args, **kwargs)
   return _
@@ -29,8 +38,6 @@ def protectedfunc(cls, f):
   return _
 
 def access(cls):
-  isFunc = lambda f: isinstance(f, type(lambda: 1))
-  
   d = dict(cls.__dict__)
   functions = {
     key : d[key] for key in d.keys()
@@ -68,23 +75,14 @@ if __name__ == '__main__':
   @access
   class test:
     @private
-    def a(self): return 1
+    def __init__(self):
+      self.a = 1
     
-    @protected
-    def b(self): return self.a()+1
-
-  class qwer(test):
-    def c(self): return self.b()+1
+    class builder:
+      def build():
+        return test()
+    
+    class Inside:
+      def b(self): return test.a(1)
   
-  r = test()
-  t = qwer()
-  
-  try: print(f'r.a() = {r.a()}')
-  except AccessException as e:
-    print('r.a() is private!')
-  
-  try: print(f'r.b() = {r.b()}')
-  except AccessException as e:
-    print('r.b() is protected!')
-  
-  print(f't.c() = {t.c()}')
+  print(test.builder.build())
