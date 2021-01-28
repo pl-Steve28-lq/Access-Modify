@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="Access-Modify",
-    version="1.0.6",
+    version="1.0.7",
     author="Steve28",
     author_email="holiday28784@gmail.com",
     description="Python module which includes private, or protected class methods for your classes.",
