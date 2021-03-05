@@ -1,18 +1,16 @@
 import os, shutil
 
 def cleanPycache():
-    removes = []
-    for root, dirs, files in os.walk('./'):
-        for i in dirs:
-            if 'pycache' in i:
-                removes.append(root + i)
-    for i in removes:
-        shutil.rmtree(i)
+  removes = []
+  for root, dirs, files in os.walk('./'):
+    for i in dirs:
+      if 'pycache' in i:
+        removes.append(root + i)
+  for i in removes: shutil.rmtree(i)
 
 def removeBuilds():
-    removes = ['build', 'dist', 'Access_Modify.egg-info']
-    for i in removes:
-        shutil.rmtree(f'./{i}')
+  removes = ['build', 'dist', 'Access-Modify.egg-info']
+  for i in removes: shutil.rmtree(i)
 
 cleanPycache()
 removeBuilds()
